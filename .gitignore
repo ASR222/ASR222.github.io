@@ -30,5 +30,4 @@ incoming/
 *:Zone.Identifier
 
 # drafts held back until Abhay answers the open questions; delete a line to publish that post
-src/content/writing/random-splits-lie.md
 src/content/writing/video-pipeline-cpu.md
