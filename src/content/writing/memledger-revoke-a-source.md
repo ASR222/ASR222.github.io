@@ -24,7 +24,7 @@ The webhook has trust 0.6, above our 0.5 threshold, so "flush the cache" becomes
 
 So what do we take back? Everything the webhook said directly, plus anything an agent concluded from it, possibly a different agent and possibly hours later. In a chat history or a key-value scratchpad nobody can answer that. In MemLedger it is one query.
 
-MemLedger is the system we built as a team for GraphHacks 2026, and this post walks through how that query works.
+I built MemLedger, and this post walks through how that query works.
 
 ## The provenance edges
 
@@ -106,7 +106,7 @@ The alert feed revoke touches three agents. Session three adds a forged alert at
 
 One revoke withdraws exactly those five. Root cause, rollback and owner came from the runbook, so they stay active. Comms then writes a fresh status that cites only surviving facts.
 
-The revoke also withdraws the genuine 09:58 alert facts, on purpose: once a feed's token is known to be leaked, we don't trust anything it said.
+The revoke also withdraws the genuine 09:58 alert facts, on purpose: once a feed's token is known to be leaked, nothing it said can be trusted.
 
 ## What an agent sees afterwards
 
@@ -114,21 +114,21 @@ The revoke also withdraws the genuine 09:58 alert facts, on purpose: once a feed
 
 - Revoked facts drop out of current beliefs. Agents read memory only through queries that match `status:'active'`, so the facts disappear from every agent's view at once.
 - The source cannot write again. `write_fact`, `retract` and `ingest` raise `CompromisedSource`, and `ingest` checks before logging anything.
-- Poisoned spellings stop spreading. We leave revoked values out of the known values we show the extractor, so the model isn't nudged to reuse them.
+- Poisoned spellings stop spreading. I leave revoked values out of the known values shown to the extractor, so the model isn't nudged to reuse them.
 - Handoffs show the change. A handoff between agents carries fact ids rather than text, and the pending-handoffs query returns each carried fact's current status, so a receiver can see that something it was handed has since been revoked.
-- Older beliefs are not reinstated. If a revoked fact had superseded something, that older fact stays closed, so after revoking a bad root cause there is no active root cause until someone writes a new one. We did not want the system to fall back to an old belief without anyone noticing.
-- History is kept. Nothing is deleted. Asking "what did we believe at 13:55?" still returns the cache flush, because the team did believe it then. A claim that was only ever quarantined does not appear, which is what `revoked_from` is for.
+- Older beliefs are not reinstated. If a revoked fact had superseded something, that older fact stays closed, so after revoking a bad root cause there is no active root cause until someone writes a new one. I did not want the system to fall back to an old belief without anyone noticing.
+- History is kept. Nothing is deleted. Asking "what did we believe at 13:55?" still returns the cache flush, because that was the belief at the time. A claim that was only ever quarantined does not appear, which is what `revoked_from` is for.
 
 There is no un-revoke. If a source was revoked by mistake, the documented path is a new source id and re-ingesting what it said.
 
 ## Choices and limits
 
-Taint is coarse. If a trusted source also asserted a fact that a compromised source corroborated, the fact is still withdrawn. For a security feature we chose "when in doubt, retract". The trusted source can re-assert it, which creates a fresh fact with clean provenance. We could count the remaining clean support before revoking, but we did not build that.
+Taint is coarse. If a trusted source also asserted a fact that a compromised source corroborated, the fact is still withdrawn. For a security feature I chose "when in doubt, retract". The trusted source can re-assert it, which creates a fresh fact with clean provenance. I could count the remaining clean support before revoking, but I did not build that.
 
 Junk echoes are ignored. Taint opens up one abuse: a low-trust source repeats a true fact, gets revoked, and takes the true fact down with it. So when an untrusted source asserts something that is already active, the write is ignored and no edge is added.
 
 Six hops is a hard limit, and deeper derivation chains are not followed. The same `*1..6` appears in `REVOKE`, `BLAST_RADIUS`, `WHY`, `WHY_PATHS` and `STALE`, and they need to change together.
 
-There is no operator authentication. Anyone who can reach the operator routes can revoke. That was acceptable for a hackathon demo, and it is written down as a known limit.
+There is no operator authentication. Anyone who can reach the operator routes can revoke. That was acceptable for a demo, and it is written down as a known limit.
 
 Without the graph, this feature could not exist at all. A revoke is a variable-length traversal over provenance edges written at the moment each belief was created, and if those edges are not recorded at write time, there is nothing to walk later.

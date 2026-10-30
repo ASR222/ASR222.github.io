@@ -105,7 +105,6 @@ export const projects: Project[] = [
       { label: 'Source on GitHub', href: 'https://github.com/rudrakshSoni-dev/memledger-graphhacks' },
     ],
     live: { href: 'https://memledger-720170616128.asia-south1.run.app/demo', host: 'Cloud Run, asia-south1 (Mumbai)' },
-    context: 'Built as a team for WeMakeDevs × FalkorDB GraphHacks 2026, in the Agent Memory and Coordination track.',
     problem:
       'When several AI agents share memory, one wrong or outdated fact spreads unnoticed, and nobody can say where it came from or undo it.',
     sections: [
@@ -161,7 +160,7 @@ export const projects: Project[] = [
       { label: 'Source on GitHub', href: 'https://github.com/ASR222/hazebusters' },
     ],
     live: { href: 'https://main.dxwuap9t49si3.amplifyapp.com/', host: 'AWS Amplify, ap-south-1 (Mumbai)' },
-    context: 'Built at WeMakeDevs × AWS Environmental Hacks 2026. The deployed sequel to my AQI Vision research.',
+    context: 'The deployed sequel to my AQI Vision research.',
     problem: 'Most schools have no air-quality monitor nearby, yet they decide every day whether children play outside.',
     sections: [
       {
@@ -218,7 +217,7 @@ export const projects: Project[] = [
       { label: 'Research report', href: 'https://drive.google.com/file/d/1BIrUD7bAX5CPW-2NoF2C2Nb1smsxfKeb/view?usp=sharing' },
       { label: 'Source on GitHub', href: 'https://github.com/ASR222/AQI_project' },
     ],
-    context: 'Minor project under Dr. Afaque Azam, Department of ECE, BIT Mesra. Team of three, 2026 to now.',
+    context: 'Minor project under Dr. Afaque Azam, Department of ECE, BIT Mesra, 2026 to now.',
     problem: 'Can a photo or a dashcam clip tell you how bad the air is, and how do you know the answer isn’t just memorised?',
     sections: [
       {

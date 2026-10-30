@@ -8,7 +8,7 @@ project: hazebusters
 draft: false
 ---
 
-On the first evening of the hackathon, the first model came back with 89.0% accuracy. On the days it had never seen, the same checkpoint scored 32.0%. Always guessing the most common answer scores 47.5%.
+On the project's first evening, the first model came back with 89.0% accuracy. On the days it had never seen, the same checkpoint scored 32.0%. Always guessing the most common answer scores 47.5%.
 
 So the model did worse than a constant, and it was confident about it: mean confidence on the test days was 0.80.
 
@@ -16,11 +16,11 @@ Here is how that happened, how I checked it wasn't a bug, and why image-to-AQI i
 
 ## The idea
 
-HazeBusters is for places with no air-quality monitor nearby. The pitch we arrived with was simple: point a phone at the street, get an AQI. If a camera could read haze, every phone would be a monitor.
+HazeBusters is for places with no air-quality monitor nearby. The pitch I started with was simple: point a phone at the street, get an AQI. If a camera could read haze, every phone would be a monitor.
 
 ![Smog over Gurgaon, 2016](/img/gurgaon-smog.jpg)
 
-The training data was TRAQID, an IIIT Hyderabad dataset of dashcam frames labelled with PM2.5 and PM10. I kept only daytime, front-camera frames, since the app's quality gate rejects night frames anyway. I recomputed every label with our own CPCB-style AQI function and grouped them into three bands: Good/Satisfactory (0 to 100), Moderate/Poor (101 to 300) and Very Poor/Severe (301 and up).
+The training data was TRAQID, an IIIT Hyderabad dataset of dashcam frames labelled with PM2.5 and PM10. I kept only daytime, front-camera frames, since the app's quality gate rejects night frames anyway. I recomputed every label with my own CPCB-style AQI function and grouped them into three bands: Good/Satisfactory (0 to 100), Moderate/Poor (101 to 300) and Very Poor/Severe (301 and up).
 
 That left 13,789 frames, which sounds like plenty until you count the calendar dates: 17. The frames are 5 seconds apart, so frames from the same drive look almost identical and share one AQI.
 
@@ -98,7 +98,7 @@ I also tested on India/Nepal air-pollution images: 12,240 frames from 8 location
 
 Image-to-AQI became an experiment in `ml/RESULTS.md` instead of a feature. The camera stayed in the app for jobs it could at least attempt: flagging possible smoke or fire and counting vehicles. Those are marked experimental and never change the AQI.
 
-The AQI now comes from sources we could check: the nearest WAQI station, or the CAMS atmospheric model when the station is too far or too old. Checking CAMS turned into its own piece of work, which I wrote up in [CAMS vs 59 ground stations](/writing/cams-vs-ground-stations).
+The AQI now comes from sources I could check: the nearest WAQI station, or the CAMS atmospheric model when the station is too far or too old. Checking CAMS turned into its own piece of work, which I wrote up in [CAMS vs 59 ground stations](/writing/cams-vs-ground-stations).
 
 ## What I took from it
 

@@ -27,13 +27,13 @@ Section 0 is the working rules. A few of them:
 
 The results file follows the metrics rule. `ml/RESULTS.md` opens with "All numbers are copied from files in `ml/runs/`."
 
-Section 2 is the hackathon's hard rules, headed "violating these = disqualification". Build only after the clock starts. And no reuse of my older project: AQI Vision "must not be reused: no code, no weights (`aqi_model.keras`), no frontend, not the name. Ideas/knowledge are fine."
+Section 2 is the hard rules. One keeps old work out of the new build, with no reuse of my older project: AQI Vision "must not be reused: no code, no weights (`aqi_model.keras`), no frontend, not the name. Ideas/knowledge are fine."
 
 The rest of the file reads like a lab notebook, so a new session picks up where the last one stopped. It has the frozen train/val/test date split with row counts, the result that killed the image-to-AQI model (32.0% on held-out dates against a 47.5% baseline) with the run directory it came from, the AWS layout, and a status section with test counts after a merge ("backend 68, shared 50, infra 92"). It also records known limitations, like this one about the quality gate: "bright indoor scenes (white walls/ceiling, windows) can pass as overcast sky".
 
 ## Many sessions, one board
 
-MemLedger, our GraphHacks project, needed a different shape: several agent sessions working on one codebase. Its `CLAUDE.md` is short and strict:
+MemLedger needed a different shape: several agent sessions working on one codebase. Its `CLAUDE.md` is short and strict:
 
 ```text
 - ONE TASK PER SESSION. Claim one board task, finish it, write the handoff note
@@ -73,16 +73,16 @@ Across these files, I need to be able to check the agent's claims without trusti
 
 ## How the repos disclose AI use
 
-The two hackathon repos handle attribution differently.
+The two repos handle attribution differently.
 
 For HazeBusters, one of the hard rules in `CLAUDE.md` is:
 
-> **List AI coding tools used** in the writeup (Claude Code etc.) even though commits carry no AI trailer. Credit everything not written by us.
+> **List AI coding tools used** in the writeup (Claude Code etc.) even though commits carry no AI trailer.
 
 The no-trailer part is a rule too ("Never add `Co-Authored-By` trailers or AI attribution to commits/PRs", and commit attribution is turned off in my Claude Code settings). The disclosure lives in the README credits instead: "**AI tools:** Claude Code and Claude chat were used for code, experiments and docs". The writeup splits it further: "Claude Code (code, experiments, docs) and Claude chat (planning, review)."
 
-MemLedger records it in the commits. Most of my commits there carry a `Co-Authored-By` trailer for Claude, and the repo includes an `AI_DISCLOSURE.md` because GraphHacks rule 11 says "AI coding assistants are allowed, but their use must be disclosed."
+MemLedger records it in the commits. Most of my commits there carry a `Co-Authored-By` trailer for Claude, and the repo also includes an `AI_DISCLOSURE.md`.
 
 ## What I take from it
 
-An instruction file is worth updating every time an agent gets something wrong, so the next session starts with the correction. It also helps to write down what "done" looks like as commands and numbers, so checking takes a minute. And say who wrote what in the place the event or reader will look, whether that's commit trailers, a README credit line or a disclosure file.
+An instruction file is worth updating every time an agent gets something wrong, so the next session starts with the correction. It also helps to write down what "done" looks like as commands and numbers, so checking takes a minute. And say who wrote what in the place a reader will look, whether that's commit trailers, a README credit line or a disclosure file.
