@@ -1,0 +1,48 @@
+---
+import { links } from '../data/site';
+import { getPosts } from '../data/writing';
+
+const hasPosts = (await getPosts()).length > 0;
+const themes = {
+  light: [
+    { id: 'silver', name: 'Silver', a: '#d1d3ce', b: '#bb4500' },
+    { id: 'sage', name: 'Sage', a: '#e6e8da', b: '#a9cfe0' },
+    { id: 'pear', name: 'Pear', a: '#ecebd9', b: '#a88aed' },
+  ],
+  dark: [
+    { id: 'graphite', name: 'Graphite', a: '#1c1e24', b: '#e07a3f' },
+    { id: 'feldgrau', name: 'Feldgrau', a: '#1a201e', b: '#a9cfe0' },
+    { id: 'indigo', name: 'Indigo', a: '#18152a', b: '#cbd83b' },
+  ],
+};
+const sections = [
+  { label: 'Work', href: '/#work' },
+  { label: 'Experience', href: '/#experience' },
+  ...(hasPosts ? [{ label: 'Writing', href: '/writing' }] : []),
+  { label: 'About', href: '/#about' },
+  { label: 'Contact', href: '/#contact' },
+];
+---
+
+<header class="topbar">
+  <a class="wordmark" href="/">Abhay Singh</a>
+  <nav class="head-nav" id="head-nav" aria-label="Main">
+    <ul role="list">
+      {sections.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      <li><a class="head-resume" href={links.resume}>Resume <span aria-hidden="true">↗</span></a></li>
+      <li class="theme-menu" data-themes hidden>
+        <button class="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-list" data-theme-toggle>
+          <span class="theme-dot" aria-hidden="true"></span>Theme
+        </button>
+        <div class="theme-list" id="theme-list" role="group" aria-label="Colour theme" hidden>
+          <button type="button" data-theme-set="auto" aria-pressed="true">Auto, follows your system</button>
+          <p class="theme-group">Light</p>
+          {themes.light.map((t) => <button type="button" data-theme-set={t.id} aria-pressed="false"><span class="swatch" style={`--a:${t.a};--b:${t.b}`} aria-hidden="true"></span>{t.name}</button>)}
+          <p class="theme-group">Dark</p>
+          {themes.dark.map((t) => <button type="button" data-theme-set={t.id} aria-pressed="false"><span class="swatch" style={`--a:${t.a};--b:${t.b}`} aria-hidden="true"></span>{t.name}</button>)}
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <button class="menu" type="button" aria-expanded="false" aria-controls="head-nav" data-menu hidden>Menu</button>
+</header>

@@ -1,0 +1,21 @@
+---
+// A figure whose pictures quietly crossfade. Each picture may be a crop of a larger screen (object-position).
+type Pic = { src: string; alt: string; width: number; height: number; position?: string; caption?: string };
+
+interface Props {
+  pics: Pic[];
+  caption: string;
+  ratio?: string;
+}
+
+const { pics, caption, ratio = '4 / 5' } = Astro.props;
+---
+
+<figure class="fade-fig">
+  <div class="fade" data-fade style={`aspect-ratio:${ratio}`}>
+    {pics.map((pic, i) => (
+      <img class:list={[{ 'is-on': i === 0 }]} src={pic.src} alt={pic.alt} width={pic.width} height={pic.height} style={`object-position:${pic.position ?? '50% 50%'}`} loading={i === 0 ? 'eager' : 'lazy'} />
+    ))}
+  </div>
+  <figcaption class="small muted">{caption}</figcaption>
+</figure>

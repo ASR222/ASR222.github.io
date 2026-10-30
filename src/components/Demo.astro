@@ -1,0 +1,107 @@
+---
+// A small working demonstration of each project, built from its documented behaviour.
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+
+// CortexAI: README agent table and routing rules (Auto mode; image → Vision; PDF → Document Q&A).
+const requests = [
+  { ask: 'What changed in the latest Go release?', agent: 'Search', how: 'Fresh web results with numbered citations, via Tavily and an LLM.' },
+  { ask: 'Build a landing page for a chai stall in Jalandhar', agent: 'Coding', how: 'Writes the files and opens a live HTML/CSS/JS preview beside the chat.' },
+  { ask: 'What does my PDF say about refunds?', file: 'contract.pdf', agent: 'Document Q&A', how: 'Retrieval over your own PDF with Gemini embeddings and Qdrant, citing page numbers.' },
+  { ask: 'What is wrong in this chart?', file: 'chart.png', agent: 'Vision', how: 'Gemini 2.5 Flash explains, transcribes and analyses the image.' },
+  { ask: 'Make a 16:9 deck on Redis persistence', agent: 'PDF / Slides', how: 'Structured LLM output rendered with python-pptx.' },
+];
+
+// MemLedger: the scripted demo incident (INC-42, payments-api latency spike), simplified.
+const facts = [
+  { key: 'root_cause', value: 'bad-deploy-v2.3.1', source: 'runbook' },
+  { key: 'mitigation', value: 'rollback-to-v2.3.0', source: 'runbook' },
+  { key: 'root_cause', value: 'redis-outage', source: 'webhook' },
+  { key: 'mitigation', value: 'flush-cache', source: 'webhook' },
+];
+---
+
+{slug === 'cortexai' && (
+  <div class="demo" data-ui data-demo="router">
+    <p class="demo-title">Try the router</p>
+    <div class="demo-choices" role="group" aria-label="Pick a request">
+      {requests.map((r, i) => (
+        <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-agent={r.agent} data-how={r.how} data-file={r.file ?? ''}>{r.ask}{r.file && <span class="demo-file"> + {r.file}</span>}</button>
+      ))}
+    </div>
+    <div class="demo-out" aria-live="polite">
+      <p><span class="muted">Routed to</span> <strong data-out="agent">{requests[0].agent}</strong> <span class="muted" data-out="why">by the Auto classifier</span></p>
+      <p class="muted" data-out="how">{requests[0].how}</p>
+      <ol class="demo-steps">
+        <li>Gateway checks the session, rate limit and CSRF token</li>
+        <li>Router picks the agent</li>
+        <li>Guard reserves credits atomically</li>
+        <li>Answer streams over SSE</li>
+        <li>Credits are committed, or refunded on failure</li>
+      </ol>
+    </div>
+  </div>
+)}
+
+{slug === 'memledger' && (
+  <div class="demo" data-ui data-demo="revoke">
+    <p class="demo-title">Try a retraction</p>
+    <p class="muted demo-note">INC-42, a latency spike on payments-api. The webhook source turns out to be compromised.</p>
+    <ul class="demo-facts" role="list">
+      {facts.map((f) => (
+        <li data-source={f.source}>
+          <span class="demo-fact">{f.key} = {f.value}</span>
+          <span class="muted demo-src">from {f.source}</span>
+          <span class="demo-state" data-state>active</span>
+        </li>
+      ))}
+    </ul>
+    <div class="demo-row">
+      <button class="demo-act" type="button" data-revoke="webhook">Revoke webhook</button>
+      <button class="demo-reset" type="button" data-reset hidden>Reset</button>
+    </div>
+    <p class="demo-result" aria-live="polite" data-result></p>
+  </div>
+)}
+
+{slug === 'hazebusters' && (
+  <div class="demo" data-ui data-demo="decide">
+    <p class="demo-title">Try the decision</p>
+    <label class="demo-range">
+      <span>Nearest station <strong data-show="km">12</strong> km away</span>
+      <input type="range" min="0" max="60" value="12" data-in="km" />
+    </label>
+    <label class="demo-range">
+      <span>Its reading is <strong data-show="age">1</strong> h old</span>
+      <input type="range" min="0" max="6" value="1" data-in="age" />
+    </label>
+    <label class="demo-range">
+      <span>AQI <strong data-show="aqi">142</strong></span>
+      <input type="range" min="0" max="500" value="142" data-in="aqi" />
+    </label>
+    <div class="demo-out" aria-live="polite">
+      <p><span class="muted">Source</span> <strong data-out="source">Nearest station</strong></p>
+      <p><span class="muted">CPCB category</span> <strong data-out="category">Moderate</strong></p>
+      <p class="demo-verdict"><span class="muted">Outdoor play</span> <strong data-out="verdict">Limit</strong></p>
+    </div>
+    <p class="small muted demo-note">The project’s rules: if the nearest station is over 25 km away or its reading is 3 h old, the decision falls back to the CAMS model, corrected ×1.25. Every profile uses the same thresholds.</p>
+  </div>
+)}
+
+{slug === 'aqi-vision' && (
+  <div class="demo" data-ui data-demo="split">
+    <p class="demo-title">Try the split</p>
+    <div class="demo-choices demo-tabs" role="group" aria-label="How the test set is held out">
+      <button type="button" aria-pressed="true" data-acc="0.63" data-note="Frames from the same day sit on both sides, so the model can memorise the day.">Random frames</button>
+      <button type="button" aria-pressed="false" data-acc="0.34" data-note="Training never sees a frame from a test day, so this is the honest number.">Whole days held out</button>
+    </div>
+    <div class="demo-meter" aria-live="polite">
+      <span class="demo-bar"><span data-out="bar" style="--v:0.63"></span></span>
+      <strong class="nums" data-out="acc">63%</strong>
+    </div>
+    <p class="small muted" data-out="note">Frames from the same day sit on both sides, so the model can memorise the day.</p>
+  </div>
+)}

@@ -1,16 +1,202 @@
 ---
+import Base from '../layouts/Base.astro';
+import Demo from '../components/Demo.astro';
+import { projects, experience, honours, skills, links } from '../data/site';
+import { getPosts, kinds, formatDate } from '../data/writing';
+
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+const live = projects.filter((p) => p.live);
+// a logo file is used only once it has been added to public/
+const has = (src?: string) => !!src && existsSync(join(process.cwd(), 'public', src));
+const posts = (await getPosts()).slice(0, 5);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  title="Abhay Singh — Backend, Distributed Systems & AI Engineer"
+  description="Final-year engineer at BIT Mesra (2027) who builds and ships backend, distributed and AI systems in Go and Python: a multi-agent LLM platform, an auditable graph memory for AI agents, and a serverless ML app on AWS."
+>
+  <section class="hero grid" aria-labelledby="hero-h">
+    <div class="hero-text">
+      <h1 id="hero-h" class="display" data-rise style="--i:0">I build systems <br />that ship.</h1>
+      <p class="hero-line" data-rise style="--i:1">
+        I’m Abhay Singh, a final-year engineer at BIT Mesra. I build backend, distributed and AI systems in Go and Python, and run them live on Google Cloud and AWS.
+      </p>
+      <p class="muted hero-open" data-rise style="--i:2">Open to backend, distributed systems, forward-deployed and ML roles: full-time from 2027, and internships.</p>
+      <div class="actions" data-rise style="--i:3">
+        <a class="button" href="#work">See my work</a>
+        <a class="arrow" href={links.resume}>Read my resume <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <aside class="status" aria-labelledby="status-h" data-ui data-rise style="--i:4">
+      <div class="status-top">
+        <h2 id="status-h" class="status-title">Live systems</h2>
+        <button class="status-again" type="button" data-wake-all>Check now</button>
+      </div>
+      <ul class="status-list" role="list">
+        {live.map((p) => (
+          <li data-wake={p.live!.href}>
+            <a class="status-name" href={p.live!.href}>{p.name}</a>
+            <span class="status-host">{p.live!.host}</span>
+            <span class="status-state" aria-live="polite"><span class="dot" aria-hidden="true"></span><span data-state-text>Not checked</span></span>
+          </li>
+        ))}
+      </ul>
+      <p class="status-note">The check runs from your browser. Cloud Run puts idle services to sleep, so a slow first response means the service is waking up.</p>
+    </aside>
+  </section>
+
+  <section class="summary grid" aria-labelledby="summary-h">
+    <h2 id="summary-h" class="sr-only">In short</h2>
+    <p class="summary-lead head" data-reveal>
+      I care most about correctness under real conditions: payments that can’t charge twice, data that can’t leak between tenants, and models tested on data they’ve never seen.
+    </p>
+    <div class="summary-cols">
+      <p data-reveal style="--i:0"><strong>Now.</strong> Final-year B.Tech in Electronics and Communication Engineering at BIT Mesra, 2023 to 2027, CGPA 7.8.</p>
+      <p data-reveal style="--i:1"><strong>Built.</strong> Three live systems in Go and Python on Cloud Run and AWS: a multi-agent AI platform, auditable memory for AI agents, and a serverless app for air-quality decisions.</p>
+      <p data-reveal style="--i:2"><strong>Worked.</strong> SDE intern at AnugatAI, building backend services for 11K+ concurrent users at 99.9% uptime. Full-stack intern at FireLLama Technology.</p>
+      <p data-reveal style="--i:3"><strong>Looking for.</strong> Backend, distributed systems, forward-deployed and ML engineering roles, full-time from 2027 or as an internship, remote or on-site.</p>
+    </div>
+    <dl class="figures">
+      <div data-reveal style="--i:0"><dt>concurrent users served as an SDE intern</dt><dd class="display nums" data-count="11" data-suffix="K+">11K+</dd></div>
+      <div data-reveal style="--i:1"><dt>production uptime held</dt><dd class="display nums" data-count="99.9" data-suffix="%">99.9%</dd></div>
+      <div data-reveal style="--i:2"><dt>systems running live on GCP and AWS</dt><dd class="display nums" data-count="3">3</dd></div>
+      <div data-reveal style="--i:3"><dt>on our agent-memory evaluation, against 5/16 for the baseline</dt><dd class="display nums" data-count="15" data-suffix="/16">15/16</dd></div>
+    </dl>
+  </section>
+
+  <section class="work grid" id="work" aria-labelledby="work-h">
+    <div class="rail">
+      <h2 id="work-h" class="head">Selected work</h2>
+      <p class="muted rail-note">Each case study covers the problem, the architecture, the decisions and the results.</p>
+    </div>
+    <div class="entries">
+      {projects.map((p) => (
+        <article class="entry" id={p.slug} aria-labelledby={`${p.slug}-h`}>
+          <div class="entry-text">
+            <h3 id={`${p.slug}-h`} class="lead" data-reveal><a href={`/work/${p.slug}`}>{p.name}</a></h3>
+            <p class="small muted entry-meta" data-reveal>{p.kind}, {p.year}{p.live ? ', live' : ''}</p>
+            <p class="entry-line" data-reveal>{p.oneLiner}</p>
+            <ul class="points" data-reveal>
+              {p.highlights.map((h) => <li>{h}</li>)}
+            </ul>
+            <p class="small muted entry-tags" data-reveal>{p.tags.join(', ')}</p>
+            <p class="entry-links" data-reveal>
+              <a class="arrow" href={`/work/${p.slug}`}>Case study <span aria-hidden="true">→</span></a>
+              {p.links.map((l) => <a href={l.href}>{l.label}</a>)}
+            </p>
+          </div>
+          <figure class="entry-fig" data-reveal>
+            <a href={`/work/${p.slug}`} tabindex="-1" aria-hidden="true">
+              <img src={p.shot.src} alt="" width={p.shot.width} height={p.shot.height} loading="lazy" />
+            </a>
+            <figcaption class="small muted">{p.shot.caption}</figcaption>
+            <Demo slug={p.slug} />
+          </figure>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="experience grid" id="experience" aria-labelledby="experience-h">
+    <div class="rail">
+      <h2 id="experience-h" class="head">Experience</h2>
+    </div>
+    <div class="column">
+      <ul class="rows" role="list">
+        {experience.map((e) => (
+          <li class="row" data-reveal>
+            {has(e.banner?.src) && <span class="job-banner"><img src={e.banner!.src} alt={e.banner!.alt} loading="lazy" /></span>}
+            {has(e.label?.src) && <img class="job-label" src={e.label!.src} alt="" />}
+            <span class="row-name">
+              {!has(e.label?.src) && <span class="dot" aria-hidden="true"></span>}
+              {e.role}, {e.org}
+            </span>
+            <span class="row-value nums">{e.dates}</span>
+            <ul class="row-detail">
+              {e.points.map((pt) => <li>{pt}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+
+      <h3 class="group-name" data-reveal>Skills</h3>
+      <ul class="rows" role="list">
+        {skills.map((s) => (
+          <li class="row row-skill" data-reveal>
+            <span class="row-name">{s.group}</span>
+            <span class="row-detail">{s.items}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="margin">
+      <h3 class="group-name group-first" data-reveal>Honours</h3>
+      <ul class="rows" role="list">
+        {honours.map((h) => (
+          <li class="row" data-reveal>
+            {has((h as any).banner?.src) && <img class="honour-banner" src={(h as any).banner.src} alt={(h as any).banner.alt} loading="lazy" />}
+            <span class="row-name">{h.href ? <a href={h.href}>{h.name}</a> : h.name}</span>
+            <span class="row-value nums">{h.year}</span>
+            <span class="row-detail">{h.note}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="writing grid" id="writing" aria-labelledby="writing-h">
+      <div class="rail">
+        <h2 id="writing-h" class="head">Writing</h2>
+        <p class="rail-note"><a class="arrow" href="/writing">All writing <span aria-hidden="true">→</span></a></p>
+      </div>
+      <ul class="ledger" role="list">
+        {posts.map((p) => (
+          <li data-reveal>
+            <a href={`/writing/${p.id}`}>
+              <span class="ledger-title">{p.data.title}{p.data.draft && ' (draft)'}</span>
+              <span class="ledger-kind">{kinds[p.data.kind]}</span>
+              <span class="ledger-date nums">{formatDate(p.data.date)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="about grid" id="about" aria-labelledby="about-h">
+    <div class="rail">
+      <h2 id="about-h" class="head">About</h2>
+    </div>
+    <div class="column letter">
+      <p data-reveal>I’m Abhay, a final-year B.Tech student in Electronics and Communication Engineering at BIT Mesra, graduating in 2027. I moved from electronics into software by building things people use, and I now work mainly in Go and Python.</p>
+      <p data-reveal>What I care about most is correctness under real conditions. In my own projects that has meant billing where a retried payment can never charge twice, multi-tenant data where one customer can never see another’s, and models evaluated on data they have never seen.</p>
+      <p data-reveal>That last habit once caught a model <mark>scoring 89% that collapsed to 32% on unseen days</mark>, so I dropped it before it shipped.</p>
+      <p data-reveal>I’ve done two engineering internships, building backend services for 11K+ concurrent users and full-stack features in production. I learn by building. Next I want a role where I own a system end to end, in backend and distributed systems, forward-deployed engineering or applied ML.</p>
+      <p class="sign" data-reveal>Abhay Singh</p>
+    </div>
+    <figure class="margin about-fig" data-reveal>
+      <div class="fade" data-fade>
+        <img class="is-on" src="/img/bit-mesra.jpg" alt="The main building of BIT Mesra at night" width="1204" height="1600" loading="lazy" />
+        <img src="/img/campus-trees.jpg" alt="Morning light through the trees on the BIT Mesra campus" width="1056" height="592" loading="lazy" />
+      </div>
+      <figcaption class="small muted">BIT Mesra, Ranchi, where I study.</figcaption>
+    </figure>
+  </section>
+
+  <section class="contact grid" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h" class="sr-only">Contact</h2>
+    <p class="contact-line head" data-reveal>Hiring for backend, distributed or ML roles? Email is the fastest way to reach me.</p>
+    <img class="contact-pic" src="/img/campus-trees.jpg" alt="" width="1056" height="592" loading="lazy" data-reveal />
+    <div class="contact-links" data-reveal>
+      <p class="contact-q">Write to me</p>
+      <p><a href={`mailto:${links.email}`}>{links.email}</a> <button class="copy" type="button" data-copy={links.email} hidden>Copy</button></p>
+      <p><a href={links.linkedin}>LinkedIn</a></p>
+      <p><a href={links.github}>GitHub</a></p>
+      <p class="small contact-where">India, open to remote and on-site roles.</p>
+    </div>
+  </section>
+</Base>

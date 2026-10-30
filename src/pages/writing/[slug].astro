@@ -1,0 +1,73 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Fade from '../../components/Fade.astro';
+import { getPosts, kinds, readingTime, formatDate, picsFor, type Post } from '../../data/writing';
+import { projects } from '../../data/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const contents = headings.filter((h) => h.depth === 2);
+const project = projects.find((p) => p.slug === post.data.project);
+---
+
+<Base title={`${post.data.title} — Abhay Singh`} description={post.data.description}>
+  <article class="post grid">
+    <aside class="rail post-rail">
+      <div class="post-rail-in">
+      <p><a class="arrow" href="/writing"><span aria-hidden="true">←</span> All writing</a></p>
+      <dl class="small post-facts">
+        <div><dt class="muted">Kind</dt><dd>{kinds[post.data.kind]}</dd></div>
+        <div><dt class="muted">Published</dt><dd><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>{post.data.draft && ' (draft, not published)'}</dd></div>
+        <div><dt class="muted">Length</dt><dd>{readingTime(post)}</dd></div>
+        {project && <div><dt class="muted">Project</dt><dd><a href={`/work/${project.slug}`}>{project.name}</a></dd></div>}
+      </dl>
+      {contents.length > 1 && (
+        <nav class="toc" aria-labelledby="toc-h">
+          <h2 id="toc-h" class="toc-title">On this page</h2>
+          <ol role="list">
+            {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </nav>
+      )}
+      </div>
+    </aside>
+
+    <header class="post-head">
+      <h1 class="display" data-rise style="--i:0">{post.data.title}</h1>
+      <p class="lead post-lead" data-rise style="--i:1">{post.data.description}</p>
+    </header>
+
+    <aside class="post-fig" aria-label="Pictures">
+      <Fade pics={picsFor(post)} caption={project ? project.shot.caption : 'From the work: the BIT Mesra campus, CortexAI, MemLedger and HazeBusters.'} ratio="4 / 5" />
+    </aside>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="post-end">
+      {project && (
+        <p class="case-next"><a href={`/work/${project.slug}`}><span class="muted">The case study behind this post</span> <strong>{project.name}</strong> <span aria-hidden="true">→</span></a></p>
+      )}
+      <p class="post-pager">
+        {newer && <a href={`/writing/${newer.id}`}>Newer: {newer.data.title}</a>}
+        {older && <a href={`/writing/${older.id}`}>Older: {older.data.title}</a>}
+      </p>
+    </footer>
+  </article>
+</Base>

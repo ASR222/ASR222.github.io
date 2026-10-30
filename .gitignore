@@ -22,3 +22,20 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# private notes and local working files, never published
+Abhay_Singh_Portfolio_Website_Content.md
+.taste-skill/
+incoming/
+*:Zone.Identifier
+
+# drafts held back until Abhay answers the open questions; delete a line to publish that post
+src/content/writing/memledger-last-write-wins.md
+src/content/writing/memledger-revoke-a-source.md
+src/content/writing/memledger-grounding-and-tenancy.md
+src/content/writing/keyless-deploys-cloud-run.md
+src/content/writing/sql-medallion-warehouse.md
+src/content/writing/random-splits-lie.md
+src/content/writing/video-pipeline-cpu.md
+src/content/writing/building-hazebusters.md
+src/content/writing/rules-for-coding-agents.md

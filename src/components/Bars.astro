@@ -1,0 +1,23 @@
+---
+import type { Figure } from '../data/site';
+
+interface Props {
+  bars: Figure[];
+  caption: string;
+}
+
+const { bars, caption } = Astro.props;
+---
+
+<figure class="bars">
+  <ul role="list">
+    {bars.map((b) => (
+      <li class={`bar-row tone-${b.tone}`} style={`--v:${b.value}`}>
+        <span class="bar-label">{b.label}</span>
+        <span class="bar-track"><span class="bar-fill" data-grow></span></span>
+        <span class="bar-value nums">{b.display}</span>
+      </li>
+    ))}
+  </ul>
+  <figcaption class="small">{caption}</figcaption>
+</figure>

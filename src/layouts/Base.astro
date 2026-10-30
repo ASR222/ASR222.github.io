@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#d1d3ce" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1e24" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet" />
+    <script is:inline>
+      // Pick the theme before the first paint: ?theme= for a shared link, then the visitor's saved choice,
+      // otherwise none, so the CSS follows the system's light or dark setting.
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        const ok = ['silver', 'sage', 'pear', 'graphite', 'feldgrau', 'indigo'];
+        let t = new URLSearchParams(location.search).get('theme');
+        if (!ok.includes(t)) { try { t = localStorage.getItem('theme'); } catch { t = null; } }
+        if (ok.includes(t)) root.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

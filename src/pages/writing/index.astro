@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import Fade from '../../components/Fade.astro';
+import { workPics } from '../../data/writing';
+import { getPosts, kinds, readingTime, formatDate } from '../../data/writing';
+
+const posts = await getPosts();
+---
+
+<Base
+  title="Writing — Abhay Singh"
+  description="Notes from building backend, distributed and AI systems: my journey, what I learned, and technical write-ups of my work."
+>
+  <section class="page-head grid" aria-labelledby="writing-h">
+    <div class="column">
+      <h1 id="writing-h" class="display" data-rise style="--i:0">Writing</h1>
+      <p class="lead page-line" data-rise style="--i:1">What I’ve learned building backend, distributed and AI systems: how I got here, the mistakes I made, and how my projects work inside.</p>
+    </div>
+    <div class="column kinds">
+      <p data-reveal><strong>{kinds.journey}.</strong> Moving from electronics into software, internships and hackathons, and what I would tell myself a year ago.</p>
+      <p data-reveal style="--i:1"><strong>{kinds.technical}.</strong> How my systems work inside: payments that can’t double-charge, race conditions caught against a real database, auditable memory for AI agents, and vision on Lambda without a GPU.</p>
+    </div>
+    <div class="margin page-fig" data-rise style="--i:3">
+      <Fade pics={workPics} caption="From the work: BIT Mesra, CortexAI, MemLedger, HazeBusters." />
+    </div>
+  </section>
+
+  <section class="writing-all grid" aria-labelledby="posts-h">
+    <div class="rail">
+      <h2 id="posts-h" class="head" data-reveal>Posts</h2>
+      {posts.length > 0 && (
+        <div class="filters" role="group" aria-label="Show posts" data-filters data-reveal hidden>
+          <button type="button" aria-pressed="true" data-filter="all">All</button>
+          <button type="button" aria-pressed="false" data-filter="journey">Journey</button>
+          <button type="button" aria-pressed="false" data-filter="technical">Technical</button>
+        </div>
+      )}
+    </div>
+    {posts.length === 0 ? (
+      <p class="column">I’m still writing the first posts. Until then, the <a href="/#work">case studies</a> go deep on how each project works.</p>
+    ) : (
+      <ul class="ledger" role="list">
+        {posts.map((p) => (
+          <li class="post-row" data-kind={p.data.kind} data-reveal>
+            <a href={`/writing/${p.id}`}>
+              <span class="ledger-title">{p.data.title}{p.data.draft && ' (draft)'}</span>
+              <span class="ledger-kind">{kinds[p.data.kind]}, {readingTime(p)}</span>
+              <span class="ledger-date nums">{formatDate(p.data.date)}</span>
+              <span class="ledger-desc">{p.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>

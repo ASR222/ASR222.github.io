@@ -1,0 +1,15 @@
+{
+  "name": "portfolio-ink",
+  "type": "dark",
+  "colors": { "editor.background": "#2a2c34", "editor.foreground": "#e6e8ec" },
+  "tokenColors": [
+    { "settings": { "foreground": "#e6e8ec" } },
+    { "scope": ["comment", "punctuation.definition.comment"], "settings": { "foreground": "#aeb6c9", "fontStyle": "italic" } },
+    { "scope": ["keyword", "storage", "storage.type", "storage.modifier", "keyword.operator.new", "keyword.control"], "settings": { "foreground": "#ffffff", "fontStyle": "bold" } },
+    { "scope": ["string", "string.quoted", "string.template", "punctuation.definition.string"], "settings": { "foreground": "#9fd8b4" } },
+    { "scope": ["constant.numeric", "constant.language", "constant.character", "constant.other"], "settings": { "foreground": "#f0c674" } },
+    { "scope": ["entity.name.function", "support.function", "meta.function-call", "entity.name.type", "support.type", "entity.name.class", "support.class"], "settings": { "foreground": "#8cc8ff" } },
+    { "scope": ["variable.parameter", "variable.other.property", "meta.object-literal.key", "entity.other.attribute-name"], "settings": { "foreground": "#d7dbe2" } },
+    { "scope": ["keyword.operator", "punctuation"], "settings": { "foreground": "#c9ced6" } }
+  ]
+}

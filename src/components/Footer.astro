@@ -1,0 +1,32 @@
+---
+import { links } from '../data/site';
+import credits from '../../assets/credits.json';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+// The closing photograph shows only once its file has been added (public/img/bit-mesra-sunset.jpg).
+const sunset = '/img/bit-mesra-sunset.jpg';
+const hasSunset = existsSync(join(process.cwd(), 'public', sunset));
+---
+
+<footer class:list={['foot', { 'has-photo': hasSunset }]}>
+  {hasSunset && <img class="foot-photo" src={sunset} alt="" loading="lazy" />}
+  <div class="foot-line">
+    <p>Abhay Singh, engineer</p>
+    <ul role="list">
+      <li><a href={links.github}>GitHub</a></li>
+      <li><a href={links.linkedin}>LinkedIn</a></li>
+      <li><a href={links.codeforces}>Codeforces</a></li>
+      <li><a href={links.resume}>Resume</a></li>
+    </ul>
+    <p class="foot-year">© 2026</p>
+  </div>
+  <p class="foot-credits">
+    Project screenshots are my own.{hasSunset && ' Closing photograph of BIT Mesra at sunset: BIT Mesra Photographic Society.'} Photographs:{' '}
+    {credits.map((c: any, i: number) => (
+      <>
+        <a href={c.page}>“{c.title}”</a> by {c.creator}, <a href={c.licenseUrl}>{c.license}</a>, via {c.via}{i < credits.length - 1 ? '; ' : '.'}{' '}
+      </>
+    ))}
+  </p>
+</footer>

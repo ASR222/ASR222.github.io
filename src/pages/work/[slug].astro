@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import Demo from '../../components/Demo.astro';
+import Bars from '../../components/Bars.astro';
+import { projects, type Project } from '../../data/site';
+
+export function getStaticPaths() {
+  return projects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project: p, next } = Astro.props;
+const details = p.stage.filter((s) => 'src' in s) as { src: string; alt: string; width: number; height: number; position?: string; caption?: string }[];
+---
+
+<Base title={`${p.name} — Abhay Singh`} description={p.oneLiner}>
+  <article class="case grid">
+    <div class="rail">
+      <p class="rail-back"><a class="arrow" href="/#work"><span aria-hidden="true">←</span> All work</a></p>
+    </div>
+
+    <header class="column case-head">
+      <h1 class="display" data-rise style="--i:0">{p.name}</h1>
+      <p class="muted case-kind" data-rise style="--i:1">{p.kind}, {p.year}</p>
+      <p class="lead case-line" data-rise style="--i:2">{p.oneLiner}</p>
+      <p class="actions" data-rise style="--i:3">
+        <a class="button" href={p.links[0].href}>{p.links[0].label}</a>
+        {p.links.slice(1).map((l) => <a class="arrow" href={l.href}>{l.label}</a>)}
+      </p>
+      {p.context && <p class="case-context" data-rise style="--i:4">{p.context}</p>}
+    </header>
+
+    <div class="margin case-margin">
+      <figure class="case-fig" data-rise style="--i:2">
+        <img src={p.shot.src} alt={p.shot.alt} width={p.shot.width} height={p.shot.height} fetchpriority="high" />
+        <figcaption class="small muted">{p.shot.caption}</figcaption>
+      </figure>
+      <Demo slug={p.slug} />
+      {details.map((x) => (
+        <figure class="case-fig case-detail" data-reveal>
+          <img src={x.src} alt={x.alt} width={x.width} height={x.height} style={`object-position:${x.position ?? '50% 50%'}`} loading="lazy" />
+          {x.caption && <figcaption class="small muted">{x.caption}</figcaption>}
+        </figure>
+      ))}
+    </div>
+
+    <div class="column case-body">
+      <section aria-labelledby="glance-h">
+        <h2 id="glance-h" class="lead" data-reveal>At a glance</h2>
+        <ul class="points" data-reveal>
+          {p.highlights.map((h) => <li>{h}</li>)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="problem-h">
+        <h2 id="problem-h" class="lead" data-reveal>The problem</h2>
+        <p data-reveal>{p.problem}</p>
+      </section>
+
+      {p.sections.map((s, i) => (
+        <section aria-labelledby={`s${i}-h`}>
+          <h2 id={`s${i}-h`} class="lead" data-reveal>{s.heading}</h2>
+          <ul class="points" data-reveal>
+            {s.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      ))}
+
+      {p.figure && (
+        <section class="case-chart" aria-labelledby="fig-h" data-reveal>
+          <h2 id="fig-h" class="lead">{p.figure.heading}</h2>
+          <Bars bars={p.figure.bars} caption={p.figure.caption} />
+        </section>
+      )}
+
+      <section aria-labelledby="stack-h">
+        <h2 id="stack-h" class="lead" data-reveal>Stack</h2>
+        <p data-reveal>{p.stack}</p>
+      </section>
+
+      <p class="case-next" data-reveal>
+        <a href={`/work/${next.slug}`}><span class="muted">Next case study</span> <strong>{next.name}</strong> <span aria-hidden="true">→</span></a>
+      </p>
+    </div>
+  </article>
+</Base>
