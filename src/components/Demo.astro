@@ -91,17 +91,18 @@ const facts = [
   </div>
 )}
 
-{slug === 'aqi-vision' && (
+{slug === 'hazebusters-split' && (
   <div class="demo" data-ui data-demo="split">
     <p class="demo-title">Try the split</p>
+    <p class="muted demo-note">A probe on the image model’s frozen embeddings, scored two ways.</p>
     <div class="demo-choices demo-tabs" role="group" aria-label="How the test set is held out">
-      <button type="button" aria-pressed="true" data-acc="0.63" data-note="Frames from the same day sit on both sides, so the model can memorise the day.">Random frames</button>
-      <button type="button" aria-pressed="false" data-acc="0.34" data-note="Training never sees a frame from a test day, so this is the honest number.">Whole days held out</button>
+      <button type="button" aria-pressed="true" data-acc="0.633" data-note="Frames from the same date land on both sides, so the model can recognise the day instead of the haze.">Random 5-fold</button>
+      <button type="button" aria-pressed="false" data-acc="0.335" data-note="Each test date is held out whole, so training never sees it. This is the honest number.">One date held out</button>
     </div>
     <div class="demo-meter" aria-live="polite">
-      <span class="demo-bar"><span data-out="bar" style="--v:0.63"></span></span>
+      <span class="demo-bar"><span data-out="bar" style="--v:0.633"></span></span>
       <strong class="nums" data-out="acc">63%</strong>
     </div>
-    <p class="small muted" data-out="note">Frames from the same day sit on both sides, so the model can memorise the day.</p>
+    <p class="small muted" data-out="note">Frames from the same date land on both sides, so the model can recognise the day instead of the haze.</p>
   </div>
 )}

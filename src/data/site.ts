@@ -178,6 +178,7 @@ export const projects: Project[] = [
         items: [
           'Validated CAMS against 59 ground stations over two years of daily PM2.5, found a steady low bias, and applied a ×1.25 correction that catches about twice as many severe-pollution days in Delhi.',
           'Tested an EfficientNet-B0 image-to-AQI model out of sample: 89% on seen days, 32% on unseen days, below a 47.5% baseline. That was leakage, so I dropped the model and used the camera for smoke and fire detection instead.',
+          'Probed why with the model’s frozen embeddings: 63.3% on a random 5-fold split over frames, 33.5% with one whole date held out at a time. It had learned each day’s look instead of haze.',
           'Fine-tuned a smoke and fire classifier on D-Fire with a near-duplicate-aware split (AP 0.979 smoke, 0.982 fire). On outside data (Pyro-SDIS) and our own clips it flagged urban haze as smoke, so it ships labelled experimental.',
         ],
       },
@@ -205,9 +206,9 @@ export const projects: Project[] = [
     kind: 'Research, image and video air quality',
     year: '2026',
     oneLiner:
-      'Deep learning research that estimates air quality from images and video, and shows that a common evaluation shortcut overstates accuracy by about 30 points.',
+      'Deep learning research that estimates air quality from images and video, with evaluation tooling that holds out whole days or locations instead of random frames.',
     highlights: [
-      'Showed that random frame splits overstate accuracy by about 30 points: 63% against 34%.',
+      'Built evaluation tooling that holds out whole days or locations, so frames from one day never sit on both sides of a split.',
       'Three-stream CNN for images, extended to video with a quality gate and YOLO11n + ByteTrack at ~12 FPS on one CPU thread.',
       'Served through FastAPI and Next.js, with 16 pytest tests.',
     ],
@@ -226,19 +227,11 @@ export const projects: Project[] = [
           'Built a three-stream CNN (RGB, HSV saturation and SLIC superpixel inputs on EfficientNet-B0 backbones, fused late) that sorts scene images into six AQI levels, served through FastAPI and a Next.js frontend.',
           'Extended it to video: OpenCV frame sampling, a frame-quality gate (brightness, tiled Laplacian sharpness, sky fraction) and sliding-window averaging with a stability score.',
           'Added YOLO11n with ByteTrack to count unique vehicles and people, dwell time and the share of heavy vehicles, at about 12 FPS on a single CPU thread, behind a /predict-video API.',
-          'Evaluated on TRAQID (13.8K dashcam frames with PM2.5 and PM10 readings) and showed that random frame splits inflate accuracy by about 30 points, 63% against 34%. Built tooling that holds out whole days or locations.',
+          'Evaluated on TRAQID (13.8K dashcam frames with PM2.5 and PM10 readings), with tooling that holds out whole days or locations.',
           'Fixed a TensorFlow and PyTorch segfault by running the tracker in its own worker process. The project has 16 pytest tests.',
         ],
       },
     ],
-    figure: {
-      heading: 'Random splits overstate accuracy',
-      caption: 'Accuracy on TRAQID, by how the test set was held out.',
-      bars: [
-        { label: 'Random frame split', value: 0.63, display: '63%', tone: 'muted' },
-        { label: 'Whole days held out', value: 0.34, display: '34%', tone: 'accent' },
-      ],
-    },
     stack: 'Python, PyTorch, TensorFlow and Keras, OpenCV, YOLO11, ByteTrack, FastAPI, Next.js, pytest',
     stage: [
       { src: '/img/gurgaon-smog.jpg', alt: 'Smog over Gurgaon near Delhi, November 2016', position: '50% 50%', width: 1920, height: 1834, caption: 'Gurgaon in smog, November 2016' },

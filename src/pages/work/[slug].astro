@@ -43,6 +43,7 @@ const details = p.stage.filter((s) => 'src' in s) as { src: string; alt: string;
         <figcaption class="small muted">{p.shot.caption}</figcaption>
       </figure>
       <Demo slug={p.slug} />
+      {p.slug === 'hazebusters' && <Demo slug="hazebusters-split" />}
       {details.map((x) => (
         <figure class="case-fig case-detail" data-reveal>
           <img src={x.src} alt={x.alt} width={x.width} height={x.height} style={`object-position:${x.position ?? '50% 50%'}`} loading="lazy" />
